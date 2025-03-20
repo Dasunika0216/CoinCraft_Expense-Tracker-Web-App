@@ -2,6 +2,7 @@ import React from 'react';
 import logo from '../assets/logo.png';
 import { Link } from 'react-router-dom';
 
+
 const HomeC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f5f7ff] to-white relative">
@@ -33,6 +34,17 @@ const HomeC = () => {
           <p className="text-xl text-gray-600 mb-10 leading-relaxed md:text-lg">
             Start Creating your budget and save ton of money
           </p>
+          <div className="flex gap-4 lg:justify-center">
+            <Link 
+              to="/login"
+              className="inline-flex items-center gap-2 bg-[#4339F2] text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:bg-[#372fd0] hover:transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#4339F2]/20 md:px-6 md:py-3.5 md:text-base"
+            >
+              Get Started
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </main>
     </div>
