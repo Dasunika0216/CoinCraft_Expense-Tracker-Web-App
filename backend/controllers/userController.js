@@ -1,6 +1,11 @@
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcryptjs'
-import validator from 'validator';
+import validator from 'validator'
+import jwt from 'jsonwebtoken'
+
+const createToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET);
+}
 
 //login user
 const loginUser = async (req, res) => {
@@ -15,9 +20,9 @@ const loginUser = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
 
-        if (isMatch){                                                                      // crete token
-            //crete toekn
-            res.json({success: true, messege: "User logged in successfully"});
+        if (isMatch){                                                                     
+            const token = createToken(user._id)
+            res.json({success: true, messege: "User logged in successfully", token});
         }
         else {
             res.json({success: false, messege: "Invalid password"});
