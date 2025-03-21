@@ -1,5 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Login');
@@ -13,12 +15,33 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      
+      if (currentState === "Sign Up"){
+        const response = await axios.post('http://localhost:4000/api/user/register', {name, email, password, confirmPassword});
+        console.log(response.data);
+
+        if (response.data.success){
+          // create token and save it in local storage
+        }
+        else{
+          toast.error(response.data.message);
+        }  
+      }
+      else {
+        const response = await axios.post('http://localhost:4000/api/user/login', {email, password});
+        console.log(response.data);
+
+        if (response.data.success){
+                       // create token and save it in local storage
+        }
+        else{
+          toast.error(response.data.message);
+        }                                          
+      }
     } 
     catch (error) {
-      
+      console.log(error);
+      toast.error(error.message);
     }
-
   }
 
   return (
