@@ -24,7 +24,8 @@ const Login = () => {
         console.log(response.data);
 
         if (response.data.success){
-          // create token and save it in local storage
+          setToken(response.data.token);
+          localStorage.setItem('token', response.data.token);
         }
         else{
           toast.error(response.data.message);
