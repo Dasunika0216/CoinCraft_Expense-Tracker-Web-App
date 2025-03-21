@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Login');
@@ -10,6 +11,9 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [token, setToken] = useState('');
+
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +24,8 @@ const Login = () => {
         console.log(response.data);
 
         if (response.data.success){
-          // create token and save it in local storage
+          setToken(response.data.token);
+          localStorage.setItem('token', response.data.token);
         }
         else{
           toast.error(response.data.message);
@@ -31,7 +36,8 @@ const Login = () => {
         console.log(response.data);
 
         if (response.data.success){
-                       // create token and save it in local storage
+          setToken(response.data.token);
+          localStorage.setItem('token', response.data.token);
         }
         else{
           toast.error(response.data.message);
@@ -43,6 +49,12 @@ const Login = () => {
       toast.error(error.message);
     }
   }
+
+  useEffect(() => {
+    if (token){
+      navigate('/dashboard');
+    }
+  },[token])
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
