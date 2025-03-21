@@ -22,19 +22,19 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-8">
-            <Link to="/dashboard" className="relative text-gray-700 hover:text-[#04094f] px-3 py-2 text-sm font-medium transition-all duration-200 group" > Dashboard
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#04094f] transition-all duration-300 group-hover:w-full"></span>
+            <Link to="/dashboard" className="relative text-gray-700 hover:text-[#0b0259] px-3 py-2 text-sm font-medium transition-all duration-200 group" > Dashboard
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0b0259] transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
-            <Link to="/income" className="relative text-gray-700 hover:text-[#04094f] px-3 py-2 text-sm font-medium transition-all duration-200 group" > Income
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#04094f] transition-all duration-300 group-hover:w-full"></span>
+            <Link to="/income" className="relative text-gray-700 hover:text-[#0b0259] px-3 py-2 text-sm font-medium transition-all duration-200 group" > Income
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0b0259] transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
-            <Link to="/expenses" className="relative text-gray-700 hover:text-[#04094f] px-3 py-2 text-sm font-medium transition-all duration-200 group" > Expenses
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#04094f] transition-all duration-300 group-hover:w-full"></span>
+            <Link to="/expenses" className="relative text-gray-700 hover:text-[#0b0259] px-3 py-2 text-sm font-medium transition-all duration-200 group" > Expenses
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0b0259] transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
-            <button onClick={handleLogout} className="bg-[#04094f] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#031b3a] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0" > Logout </button>
+            <button onClick={handleLogout} className="bg-[#0b0259] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#031b3a] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0" > Logout </button>
           </div>
         </div>
       </div>
