@@ -13,7 +13,7 @@ const HomeC = () => {
       <nav className="px-16 py-6 flex justify-between items-center lg:px-8 lg:py-4">
         <div className="flex items-center gap-2">
           <Link to="/">
-            <img src={logo} alt="CoinCraft Logo" className="h-40 w-21" />
+            <img src={logo} alt="CoinCraft Logo" className="h-20 w-21" />
           </Link>
         </div>
       </nav>
