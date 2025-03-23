@@ -17,11 +17,26 @@ const Income = () => {
     console.log(icon, source, amount, date);
 
     try {
-      const response = await axios.post('http://localhost:4000/api/income/add-income', {icon, source, amount, date});
+      const response = await axios.post('http://localhost:4000/api/dashboard/add-income', {icon, source, amount, date}, {headers:{token: localStorage.getItem('token')}});
       console.log(response.data);
+
+      if (response.data.success) {
+        try {
+          setShowForm(false);
+          setShowIconPicker(false);
+          setIcon("💰");
+          setSource("");
+          setAmount("");
+          setDate("");
+        } 
+        catch (error) {
+          console.log("Error in adding the income",error);
+
+        }
+      }
     } 
     catch (error) {
-      
+      console.log("Error in adding the income",error);
     }
   }
 
@@ -117,6 +132,10 @@ const Income = () => {
                       onClick={() => {
                         setShowForm(false);
                         setShowIconPicker(false);
+                        setIcon("💰");
+                        setSource("");
+                        setAmount("");
+                        setDate("");
                       }}
                       className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
                     >

@@ -5,7 +5,7 @@ const incomeSchema = new mongoose.Schema ({
     source: {type:String, required:true},
     icon: {type:String, required:true},
     amount: {type:Number, required:true},
-    date: {type:Number, required:true}
+    date: {type:Date, required:true}
 }, {minimize: false})
 
 const incomeModel = mongoose.models.income || mongoose.model('income', incomeSchema);
