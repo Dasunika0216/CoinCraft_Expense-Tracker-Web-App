@@ -31,7 +31,6 @@ const Income = () => {
         } 
         catch (error) {
           console.log("Error in adding the income",error);
-
         }
       }
     } 
@@ -124,6 +123,7 @@ const Income = () => {
                       className="w-full p-2 border border-gray-300 rounded-lg"
                       placeholder="mm/dd/yyyy"
                       required={true}
+                      max={new Date().toISOString().split("T")[0]}
                     />
                   </div>
                   <div className="flex justify-end gap-2">
