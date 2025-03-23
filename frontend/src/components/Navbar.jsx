@@ -7,7 +7,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token');                   // remove token when logout
     navigate('/login');
   };
 
@@ -41,6 +41,7 @@ const Navbar = () => {
               }`}></span>
             </Link>
 
+              
             <button onClick={handleLogout} className="bg-[#0b0259] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#031b3a] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0" > Logout </button>
           </div>
         </div>
