@@ -29,6 +29,8 @@ const Income = () => {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
   const [incomes, setIncomes] = useState([]);
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const icons = ["💰", "💼", "💻", "🏢", "🎨", "📚", "🎵", "🎮", "📱", "✏️"];
 
@@ -80,6 +82,20 @@ const Income = () => {
       }
     } catch (error) {
       console.log("Error in adding the income", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.post("http://localhost:4000/api/dashboard/delete-income", { id }, { headers: { token: localStorage.getItem("token")}});
+
+      if (response.data.success) {
+        setShowDeleteConfirm(false);
+        setDeleteId(null);
+        fetchIncome();
+      }
+    } catch (error) {
+      console.log("Error in deleting the income", error);
     }
   };
 
@@ -169,14 +185,14 @@ const Income = () => {
               {incomes.map((income, index) => (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-white to-gray-50 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200 group"
+                  className="bg-gradient-to-br from-white to-gray-50 border border-green-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200 group hover:border-green-200"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-5">
+                      <div className="p-4 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-shadow border border-green-50">
                         <span className="text-3xl">{income.icon}</span>
                       </div>
-                      <div>
+                      <div className="space-y-1">
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {income.source}
                         </h3>
@@ -189,14 +205,14 @@ const Income = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="flex flex-col items-end space-y-2">
                       <p className="text-green-500 font-bold text-xl">
                         + ${income.amount}
                       </p>
-                      <div className="mt-2">
+                      <div className="flex items-center space-x-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-green-500 inline-block transform group-hover:translate-y-[-2px] transition-transform"
+                          className="h-5 w-5 text-green-500 transform group-hover:translate-y-[-2px] transition-transform"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -206,6 +222,26 @@ const Income = () => {
                             clipRule="evenodd"
                           />
                         </svg>
+                        <button
+                          onClick={() => {
+                            setDeleteId(income._id);
+                            setShowDeleteConfirm(true);
+                          }}
+                          className="text-red-500 hover:text-red-600 transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -335,6 +371,37 @@ const Income = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Confirm Delete
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this income entry? This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setDeleteId(null);
+                }}
+                className="px-4 py-2 text-gray-500 hover:text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(deleteId)}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>

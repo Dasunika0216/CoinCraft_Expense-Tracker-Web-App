@@ -40,7 +40,16 @@ const listIncome = async (req, res) => {
 }
 
 const deleteIncome = async (req, res) => {
+    const {id} = req.body;
 
+    try {
+        await incomeModel.findByIdAndDelete(id);
+        res.json({success: true, messege: "Selected income is removed successfully"});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 const addBudget = async (req, res) => {
