@@ -26,6 +26,19 @@ const addIncome = async (req, res) => {
     }
 }
 
+const listIncome = async (req, res) => {
+    try {
+        const {userId} = req.body;
+
+        const incomes = await incomeModel.find({userId}).sort({ date: 1 });
+        res.json({success: true, data: incomes});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message})
+    }
+}
+
 const deleteIncome = async (req, res) => {
 
 }
@@ -46,4 +59,4 @@ const deleteExpense = async (req, res) => {
 
 }
 
-export {addIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense};
+export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense};
