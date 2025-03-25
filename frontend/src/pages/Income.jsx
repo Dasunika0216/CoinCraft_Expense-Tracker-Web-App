@@ -36,11 +36,7 @@ const Income = () => {
 
   const fetchIncome = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/list-income",
-        {},
-        { headers: { token: localStorage.getItem("token") } }
-      );
+      const response = await axios.post("http://localhost:4000/api/dashboard/list-income", {}, { headers: { token: localStorage.getItem("token")}});
       console.log(response.data.data);
 
       if (response.data.success) {
@@ -60,11 +56,7 @@ const Income = () => {
     console.log(icon, source, amount, date);
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/add-income",
-        { icon, source, amount, date },
-        { headers: { token: localStorage.getItem("token") } }
-      );
+      const response = await axios.post("http://localhost:4000/api/dashboard/add-income", { icon, source, amount, date }, { headers: { token: localStorage.getItem("token")}});
       console.log(response.data);
 
       if (response.data.success) {
