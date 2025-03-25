@@ -53,7 +53,12 @@ const deleteIncome = async (req, res) => {
 }
 
 const addBudget = async (req, res) => {
-
+    try {
+        
+    } 
+    catch (error) {
+        
+    }
 }
 
 const listBudget = async (res, req) => {
