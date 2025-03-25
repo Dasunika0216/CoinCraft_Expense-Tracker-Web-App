@@ -8,19 +8,29 @@ const Expense = () => {
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [budget, setBudget] = useState("");
   const [amount, setAmount] = useState("");
-  const [deleteId, setDeleteId] = useState(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const icons = ["💰", "🛍️", "🏠", "🚗", "🌳", "📱", "✈️", "🎮", "📚", "🍽️"];
+
+  const fetchBudget = async () => {
+
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/add-budget', {icon, budget, amount}, {headers: {token: localStorage.getItem("token")}});
+      const response = await axios.post('http://localhost:4000/api/dashboard/add-budget', {icon, name: budget, allocatedAmount:amount}, {headers: {token: localStorage.getItem("token")}});
       console.log(response.data);
 
-      
+      if (response.data.success) {
+        setShowForm(false);
+        setIcon("💰");
+        setShowIconPicker(false);
+        setBudget("");
+        setAmount("");
+        fetchBudget();
+      }
+
     } 
     catch (error) {
       

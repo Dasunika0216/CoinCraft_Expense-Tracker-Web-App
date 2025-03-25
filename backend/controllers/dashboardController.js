@@ -54,10 +54,23 @@ const deleteIncome = async (req, res) => {
 
 const addBudget = async (req, res) => {
     try {
-        
+        const {userId, icon, name, allocatedAmount } = req.body;
+
+        const budgetDetails = {
+            userId,
+            icon, 
+            name, 
+            allocatedAmount
+        }
+
+        const newBudget = new budgetModel(budgetDetails);
+        await newBudget.save();
+
+        res.json({success: true, message: "Budget added successfully"});
     } 
     catch (error) {
-        
+        console.log(error);
+        res.json({success: false, message: error.message});
     }
 }
 
