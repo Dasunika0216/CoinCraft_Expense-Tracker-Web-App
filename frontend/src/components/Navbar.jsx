@@ -35,9 +35,9 @@ const Navbar = () => {
             <span className={`absolute bottom-0 left-0 h-0.5 bg-[#0b0259] transition-all duration-300 ${isActive('/income') ? 'w-full' : 'w-0 group-hover:w-full' }`}></span>
             </Link>
 
-            <Link to="/expense" className={`relative text-gray-700 hover:text-[#0b0259] px-3 py-2 text-sm font-medium transition-all duration-200 group ${isActive('/expense') ? 'text-[#0b0259]' : '' }`} > Expenses
+            <Link to="/budget" className={`relative text-gray-700 hover:text-[#0b0259] px-3 py-2 text-sm font-medium transition-all duration-200 group ${isActive('/budget') ? 'text-[#0b0259]' : '' }`} > Expenses
               <span className={`absolute bottom-0 left-0 h-0.5 bg-[#0b0259] transition-all duration-300 ${
-                isActive('/expense') ? 'w-full' : 'w-0 group-hover:w-full'
+                isActive('/budget') ? 'w-full' : 'w-0 group-hover:w-full'
               }`}></span>
             </Link>
 

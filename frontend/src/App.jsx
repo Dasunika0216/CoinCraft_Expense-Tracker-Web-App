@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Income from './pages/Income'
 import Expense from './pages/Expense'
+import Budget from './pages/Budget'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path = '/dashboard' element = {<Dashboard />} />
         <Route path = '/income' element = {<Income />} />
         <Route path = '/expense' element = {<Expense />} />
+        <Route path = '/budget' element = {<Budget />} />
       </Routes>
       <Footer />
       <ToastContainer
