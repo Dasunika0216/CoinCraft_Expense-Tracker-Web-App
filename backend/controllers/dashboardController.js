@@ -18,7 +18,7 @@ const addIncome = async (req, res) => {
         const newIncome = new incomeModel(incomeDetails);
         await newIncome.save();
 
-        res.json({success: true, messege: "Income added successfully"});
+        res.json({success: true, message: "Income added successfully"});
     } 
     catch (error) {
         console.log(error);
@@ -44,7 +44,7 @@ const deleteIncome = async (req, res) => {
 
     try {
         await incomeModel.findByIdAndDelete(id);
-        res.json({success: true, messege: "Selected income is removed successfully"});
+        res.json({success: true, message: "Selected income is removed successfully"});
     } 
     catch (error) {
         console.log(error);
@@ -74,8 +74,17 @@ const addBudget = async (req, res) => {
     }
 }
 
-const listBudget = async (res, req) => {
+const listBudget = async (req, res) => {
+    try {
+        const {userId} = req.body;
 
+        const budgets = await budgetModel.find({userId});
+        res.json({success: true, data: budgets});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 const deleteBudget = async (req, res) => {
