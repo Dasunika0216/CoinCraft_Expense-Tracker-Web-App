@@ -8,12 +8,26 @@ const Expense = () => {
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [budget, setBudget] = useState("");
   const [amount, setAmount] = useState("");
+  const [budgets, setBudgets] = useState([]);
 
   const icons = ["💰", "🛍️", "🏠", "🚗", "🌳", "📱", "✈️", "🎮", "📚", "🍽️"];
 
   const fetchBudget = async () => {
-
+    try {
+      const response = await axios.post('http://localhost:4000/api/dashboard/list-budget', {}, {headers: {token: localStorage.getItem("token")}});
+    
+      if (response.data.success) {
+        setBudgets(response.data.data);
+      }
+    } 
+    catch (error) {
+      console.log("Error in fetching budget", error);
+    }
   }
+
+  useEffect(() => {
+    fetchBudget();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +47,7 @@ const Expense = () => {
 
     } 
     catch (error) {
-      
+      console.log("Error in adding budget", error);
     }
   }
 
@@ -55,34 +69,74 @@ const Expense = () => {
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">My Budgets</h1>
+          {/* Budgets Card */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">My Budgets</h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Create New Budget Card */}
-            <button 
-              onClick={() => setShowForm(true)}
-              className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center justify-center min-h-[200px] hover:shadow-xl transition-shadow cursor-pointer"
-            >
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </div>
-              <span className="text-gray-600 font-medium">
-                Create New Budget
-              </span>
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Create New Budget Card */}
+              <button 
+                onClick={() => setShowForm(true)}
+                className="bg-gray-50 p-8 rounded-xl border border-gray-200 flex flex-col items-center justify-center min-h-[200px] hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-gray-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                </div>
+                <span className="text-gray-600 font-medium">
+                  Create New Budget
+                </span>
+              </button>
+
+              {/* Budget Cards */}
+              {budgets.map((budget) => {
+                const spentAmount = budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0;
+                const remainingAmount = budget.allocatedAmount - spentAmount;
+                const progress = (spentAmount / budget.allocatedAmount) * 100;
+                
+                return (
+                  <div key={budget._id} className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl">
+                          {budget.icon}
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-gray-800">{budget.name}</h3>
+                          <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
+                        </div>
+                      </div>
+                      <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>${spentAmount} Spent</span>
+                        <span>${remainingAmount} Remaining</span>
+                      </div>
+                      <div className="h-2 bg-white rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                          style={{ width: `${progress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Add Budget Form Modal */}
