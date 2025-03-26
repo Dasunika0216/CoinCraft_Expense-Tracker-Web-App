@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import AddExpense from '../components/AddExpense';
 import { toast } from 'react-toastify';
 
 const Expense = () => {
@@ -15,6 +16,7 @@ const Expense = () => {
   const [editName, setEditName] = useState("");
   const [editAmount, setEditAmount] = useState("");
   const [showIconPicker, setShowIconPicker] = useState(false);
+  const [expenses, setExpenses] = useState([]);
 
   const icons = ["💰", "🛍️", "🏠", "🚗", "🌳", "📱", "✈️", "🎮", "📚", "🍽️"];
 
@@ -72,9 +74,22 @@ const Expense = () => {
     }
   };
 
+  // Fetch expenses
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/api/dashboard/list-expense', { budgetId }, { headers: { token: localStorage.getItem("token") }});
+      if (response.data.success) {
+        setExpenses(response.data.data);
+      }
+    } catch (error) {
+      console.log("Error fetching expenses:", error);
+    }
+  };
+
   useEffect(() => {
     if (budgetId) {
       fetchBudgetDetails();
+      fetchExpenses();
     }
   }, [budgetId]);
 
@@ -118,38 +133,70 @@ const Expense = () => {
             </div>
           </div>
 
-          {/* Budget Card */}
-          {budget && (
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 max-w-sm">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl">
-                    {budget.icon}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Budget Card */}
+            {budget && (
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl">
+                      {budget.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-800">{budget.name}</h3>
+                      <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-medium text-gray-800">{budget.name}</h3>
-                    <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
-                  </div>
+                  <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
                 </div>
-                <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
-              </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>${budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0} Spent</span>
-                  <span>${budget.allocatedAmount - (budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0)} Remaining</span>
-                </div>
-                <div className="h-2 bg-white rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-                    style={{ 
-                      width: `${((budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0) / budget.allocatedAmount) * 100}%` 
-                    }}
-                  ></div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>${budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0} Spent</span>
+                    <span>${budget.allocatedAmount - (budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0)} Remaining</span>
+                  </div>
+                  <div className="h-2 bg-white rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                      style={{ 
+                        width: `${((budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0) / budget.allocatedAmount) * 100}%` 
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
+            )}
+
+            {/* Add Expense Form */}
+            <AddExpense 
+              budgetId={budgetId}
+              onExpenseAdded={() => {
+                fetchBudgetDetails();
+                fetchExpenses();
+              }}
+            />
+          </div>
+
+          {/* Latest Expenses Section */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">Latest Expenses</h2>
+            <div className="space-y-4">
+              {expenses.map((expense) => (
+                <div key={expense._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h3 className="font-medium text-gray-800">{expense.name}</h3>
+                    <p className="text-sm text-gray-500">
+                      {new Date(expense.date).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <span className="text-indigo-600 font-semibold">${expense.amount}</span>
+                </div>
+              ))}
+              {expenses.length === 0 && (
+                <p className="text-gray-500 text-center py-4">No expenses yet</p>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Edit Form Modal */}
           {showEditForm && (
