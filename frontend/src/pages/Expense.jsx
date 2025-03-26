@@ -11,16 +11,47 @@ const Expense = () => {
   const [budget, setBudget] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [editIcon, setEditIcon] = useState("💰");
+  const [editName, setEditName] = useState("");
+  const [editAmount, setEditAmount] = useState("");
+  const [showIconPicker, setShowIconPicker] = useState(false);
+
+  const icons = ["💰", "🛍️", "🏠", "🚗", "🌳", "📱", "✈️", "🎮", "📚", "🍽️"];
+
+  // Initialize edit form with current budget values
+  useEffect(() => {
+    if (budget) {
+      setEditIcon(budget.icon);
+      setEditName(budget.name);
+      setEditAmount(budget.allocatedAmount);
+    }
+  }, [budget]);
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:4000/api/dashboard/update-budget', {budgetId, icon: editIcon, name: editName, allocatedAmount: editAmount }, { headers: { token: localStorage.getItem("token")}});
+
+      if (response.data.success) {
+        toast.success("Budget updated successfully");
+        setShowEditForm(false);
+        // Refresh budget details
+        fetchBudgetDetails();
+      }
+    } catch (error) {
+      toast.error('Error updating budget');
+      console.log(error);
+    }
+  };
 
   const handleDelete = async () => {
     try {
-        const response = await axios.post('http://localhost:4000/api/dashboard/delete-budget', {budgetId}, {headers: {token: localStorage.getItem("token")}});
+      const response = await axios.post('http://localhost:4000/api/dashboard/delete-budget', { budgetId }, { headers: { token: localStorage.getItem("token")}});
 
-        if (response.data.success) {
-            toast.success("Budget deleted successfully");
-            navigate('/budget');
-        }
-        
+      if (response.data.success) {
+        toast.success("Budget deleted successfully");
+        navigate('/budget');
+      }
     } 
     catch (error) {
       toast.error('Error deleting budget');
@@ -29,19 +60,19 @@ const Expense = () => {
   }
 
   // Fetch budget details
-  useEffect(() => {
-    const fetchBudgetDetails = async () => {
-      try {
-        const response = await axios.post('http://localhost:4000/api/dashboard/list-budget', {}, { headers: { token: localStorage.getItem("token")}});
-        if (response.data.success) {
-          const selectedBudget = response.data.data.find(b => b._id === budgetId);
-          setBudget(selectedBudget);
-        }
-      } catch (error) {
-        console.log("Error fetching budget details:", error);
+  const fetchBudgetDetails = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/api/dashboard/list-budget', {}, { headers: { token: localStorage.getItem("token")}});
+      if (response.data.success) {
+        const selectedBudget = response.data.data.find(b => b._id === budgetId);
+        setBudget(selectedBudget);
       }
-    };
+    } catch (error) {
+      console.log("Error fetching budget details:", error);
+    }
+  };
 
+  useEffect(() => {
     if (budgetId) {
       fetchBudgetDetails();
     }
@@ -116,6 +147,117 @@ const Expense = () => {
                     }}
                   ></div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Edit Form Modal */}
+          {showEditForm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">Edit Budget</h2>
+                  <button
+                    onClick={() => {
+                      setShowEditForm(false);
+                      setShowIconPicker(false);
+                    }}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <form onSubmit={handleEdit} className="space-y-6">
+                  {/* Icon Picker */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Choose Icon
+                    </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowIconPicker(!showIconPicker)}
+                        className="w-full px-4 py-2 text-left border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                        <span className="text-2xl">{editIcon}</span>
+                      </button>
+                      {showIconPicker && (
+                        <div className="absolute top-full left-0 mt-2 p-2 bg-white border rounded-lg shadow-lg grid grid-cols-5 gap-2 z-50">
+                          {icons.map((emoji) => (
+                            <button
+                              key={emoji}
+                              type="button"
+                              onClick={() => {
+                                setEditIcon(emoji);
+                                setShowIconPicker(false);
+                              }}
+                              className="text-2xl p-2 hover:bg-gray-100 rounded"
+                            >
+                              {emoji}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Budget Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Budget Name
+                    </label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                      placeholder="Enter Budget Name"
+                    />
+                  </div>
+
+                  {/* Budget Amount */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Budget Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={editAmount}
+                      onChange={(e) => setEditAmount(e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                      placeholder="Enter Budget Amount"
+                    />
+                  </div>
+
+                  {/* Form Actions */}
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowEditForm(false);
+                        setShowIconPicker(false);
+                        // Reset form to current budget values
+                        setEditIcon(budget.icon);
+                        setEditName(budget.name);
+                        setEditAmount(budget.allocatedAmount);
+                      }}
+                      className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
