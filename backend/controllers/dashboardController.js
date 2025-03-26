@@ -88,7 +88,16 @@ const listBudget = async (req, res) => {
 }
 
 const deleteBudget = async (req, res) => {
+    const {budgetId} = req.body;
 
+    try {
+        await budgetModel.findByIdAndDelete(budgetId);
+        res.json({success: true, messege: "Budget deleted successfully"});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 const addExpense = async (req, res) => {
