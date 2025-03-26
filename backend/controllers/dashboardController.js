@@ -114,7 +114,26 @@ const deleteBudget = async (req, res) => {
 }
 
 const addExpense = async (req, res) => {
+    try {
+        const {userId, budgetId, name, amount, date} = req.body;
 
+        const expenseDetails = {
+            userId,
+            budgetId,
+            name,
+            amount,
+            date
+        }
+
+        const newExpense = new expenseModel(expenseDetails);
+        await newExpense.save();
+
+        res.json({success: true, message: "Expense added successfully"});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 const listExpense = async (res, req) => {
