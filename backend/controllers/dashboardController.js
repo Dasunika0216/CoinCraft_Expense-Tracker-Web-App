@@ -87,6 +87,19 @@ const listBudget = async (req, res) => {
     }
 }
 
+const updateBudget = async (req, res) => {
+    const {budgetId, icon, name, allocatedAmount} = req.body;
+
+    try {
+        await budgetModel.findByIdAndUpdate(budgetId, {icon, name, allocatedAmount});
+        res.json({success: true, message: "Budget updated successfully"});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+}
+
 const deleteBudget = async (req, res) => {
     const {budgetId} = req.body;
 
@@ -112,4 +125,4 @@ const deleteExpense = async (req, res) => {
 
 }
 
-export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget};
+export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget, updateBudget};

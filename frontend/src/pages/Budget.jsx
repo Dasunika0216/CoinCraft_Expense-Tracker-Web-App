@@ -73,7 +73,7 @@ const Budget = () => {
 
           {/* Budgets Card */}
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">My Budgets</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Set Your Budget</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Create New Budget Card */}
