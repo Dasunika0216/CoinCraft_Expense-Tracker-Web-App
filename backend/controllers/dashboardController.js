@@ -128,6 +128,14 @@ const addExpense = async (req, res) => {
         const newExpense = new expenseModel(expenseDetails);
         await newExpense.save();
 
+        // Update budget's item count and spent amount
+        await budgetModel.findByIdAndUpdate(budgetId, {
+            $inc: {
+                itemCount: 1,
+                spentAmount: amount
+            }
+        });
+
         res.json({success: true, message: "Expense added successfully"});
     } 
     catch (error) {
@@ -141,7 +149,16 @@ const listExpense = async (res, req) => {
 }
 
 const deleteExpense = async (req, res) => {
+    const {expenseId} = req.body;
 
+    try {
+        await expenseModel.findByIdAndDelete(expenseId);
+        res.json({success: true, message: "Expense deleted successfully"});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget, updateBudget};

@@ -104,9 +104,8 @@ const Budget = () => {
 
               {/* Budget Cards */}
               {budgets.map((budget) => {
-                const spentAmount = budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0;
-                const remainingAmount = budget.allocatedAmount - spentAmount;
-                const progress = (spentAmount / budget.allocatedAmount) * 100;
+                const remainingAmount = budget.allocatedAmount - budget.spentAmount;
+                const progress = (budget.spentAmount / budget.allocatedAmount) * 100;
                 
                 return (
                   <div 
@@ -121,7 +120,7 @@ const Budget = () => {
                         </div>
                         <div>
                           <h3 className="font-medium text-gray-800">{budget.name}</h3>
-                          <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
+                          <p className="text-sm text-gray-500">{budget.itemCount} Item{budget.itemCount !== 1 ? 's' : ''}</p>
                         </div>
                       </div>
                       <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
@@ -129,7 +128,7 @@ const Budget = () => {
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm text-gray-600">
-                        <span>${spentAmount} Spent</span>
+                        <span>${budget.spentAmount} Spent</span>
                         <span>${remainingAmount} Remaining</span>
                       </div>
                       <div className="h-2 bg-white rounded-full overflow-hidden">

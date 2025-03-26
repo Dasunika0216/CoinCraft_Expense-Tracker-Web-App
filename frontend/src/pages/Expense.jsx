@@ -86,6 +86,23 @@ const Expense = () => {
     }
   };
 
+  const handleDeleteExpense = async () => {
+    try {
+        const response = await axios.post('http://localhost:4000/api/dashboard/delete-expense', { expenseId: expenses._id }, { headers: { token: localStorage.getItem("token")}});
+        
+        if (response.data.success) {
+          toast.success("Expense deleted successfully");
+          fetchBudgetDetails();
+          fetchExpenses();
+        } else {
+          toast.error(response.data.message || "Failed to delete expense");
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Error deleting expense");
+        console.error("Error deleting expense:", error);
+      }
+  }
+
   useEffect(() => {
     if (budgetId) {
       fetchBudgetDetails();
@@ -144,7 +161,7 @@ const Expense = () => {
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-800">{budget.name}</h3>
-                      <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
+                      <p className="text-sm text-gray-500">{budget.itemCount} Item{budget.itemCount !== 1 ? 's' : ''}</p>
                     </div>
                   </div>
                   <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
@@ -152,14 +169,14 @@ const Expense = () => {
 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-gray-600">
-                    <span>${budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0} Spent</span>
-                    <span>${budget.allocatedAmount - (budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0)} Remaining</span>
+                    <span>${budget.spentAmount} Spent</span>
+                    <span>${budget.allocatedAmount - budget.spentAmount} Remaining</span>
                   </div>
                   <div className="h-2 bg-white rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-indigo-600 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${((budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0) / budget.allocatedAmount) * 100}%` 
+                        width: `${(budget.spentAmount / budget.allocatedAmount) * 100}%` 
                       }}
                     ></div>
                   </div>
@@ -189,7 +206,17 @@ const Expense = () => {
                       {new Date(expense.date).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className="text-indigo-600 font-semibold">${expense.amount}</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-indigo-600 font-semibold">${expense.amount}</span>
+                    <button
+                      onClick={handleDeleteExpense}
+                      className="text-red-500 hover:text-red-600 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               ))}
               {expenses.length === 0 && (
