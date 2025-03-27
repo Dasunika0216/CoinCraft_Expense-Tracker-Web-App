@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Chart as ChartJS, CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend,} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 const Budget = () => {
   const navigate = useNavigate();
@@ -13,6 +15,8 @@ const Budget = () => {
   const [amount, setAmount] = useState("");
   const [budgets, setBudgets] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
 
   const icons = ["💰", "🛍️", "🏠", "🚗", "🌳", "📱", "✈️", "🎮", "📚", "🍽️"];
 
@@ -76,6 +80,7 @@ const Budget = () => {
       console.log(response.data);
 
       if (response.data.success) {
+        setShowDeleteConfirm(false);
         fetchExpenses();
       }
     } 
@@ -104,11 +109,13 @@ const Budget = () => {
 
           {/* Budgets Card */}
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Set Your Budget</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">
+              Set Your Budget
+            </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Create New Budget Card */}
-              <button 
+              <button
                 onClick={() => setShowForm(true)}
                 className="bg-gray-50 p-8 rounded-xl border border-gray-200 flex flex-col items-center justify-center min-h-[200px] hover:bg-gray-100 transition-colors cursor-pointer"
               >
@@ -135,15 +142,21 @@ const Budget = () => {
 
               {/* Budget Cards */}
               {budgets.map((budget) => {
-                const spentAmount = budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0;
+                const spentAmount =
+                  budget.expenses?.reduce(
+                    (total, expense) => total + expense.amount,
+                    0
+                  ) || 0;
                 const remainingAmount = budget.allocatedAmount - spentAmount;
                 const progress = (spentAmount / budget.allocatedAmount) * 100;
-                
+
                 return (
-                  <div 
-                    key={budget._id} 
+                  <div
+                    key={budget._id}
                     className="bg-gray-50 p-6 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100 transition-all duration-200"
-                    onClick={() => navigate('/expense', { state: { budgetId: budget._id } })}
+                    onClick={() =>
+                      navigate("/expense", { state: { budgetId: budget._id } })
+                    }
                   >
                     <div className="flex justify-between items-start mb-6">
                       <div className="flex items-center gap-3">
@@ -151,11 +164,18 @@ const Budget = () => {
                           {budget.icon}
                         </div>
                         <div>
-                          <h3 className="font-medium text-gray-800">{budget.name}</h3>
-                          <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
+                          <h3 className="font-medium text-gray-800">
+                            {budget.name}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {budget.expenses?.length || 0} Item
+                            {budget.expenses?.length !== 1 ? "s" : ""}
+                          </p>
                         </div>
                       </div>
-                      <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
+                      <span className="text-indigo-600 font-semibold">
+                        ${budget.allocatedAmount}
+                      </span>
                     </div>
 
                     <div className="space-y-2">
@@ -164,7 +184,7 @@ const Budget = () => {
                         <span>${remainingAmount} Remaining</span>
                       </div>
                       <div className="h-2 bg-white rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-indigo-600 rounded-full transition-all duration-500"
                           style={{ width: `${progress}%` }}
                         ></div>
@@ -178,11 +198,15 @@ const Budget = () => {
 
           {/* All Expenses Section */}
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-            <h1 className="text-2xl font-bold text-gray-800">Recent Expenses</h1>
-            <p className="text-gray-600 mt-2 mb-6">Your latest expense entries</p>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Recent Expenses
+            </h1>
+            <p className="text-gray-600 mt-2 mb-6">
+              Your latest expense entries
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {expenses.map((expense) => (
-                <div 
+                <div
                   key={expense._id}
                   className="bg-white p-6 rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-200"
                 >
@@ -192,29 +216,42 @@ const Budget = () => {
                         {expense.icon || "💰"}
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-800">{expense.name}</h3>
-                        <p className="text-gray-500">{new Date(expense.date).toLocaleDateString('en-US', { 
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}</p>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {expense.name}
+                        </h3>
+                        <p className="text-gray-500">
+                          {new Date(expense.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xl font-semibold text-red-500">- ${expense.amount}</span>
-                      <div className="flex gap-2"> 
-                        <button 
+                      <span className="text-xl font-semibold text-red-500">
+                        - ${expense.amount}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
                           className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleDelete(expense._id);
-                            toast.success("Expense deleted successfully");
-                            fetchExpenses();
-
+                            setShowDeleteConfirm(true);
+                            setDeleteId(expense._id);
                           }}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                         </button>
                       </div>
@@ -224,17 +261,52 @@ const Budget = () => {
               ))}
               {expenses.length === 0 && (
                 <div className="col-span-2 text-center py-8 text-gray-500">
-                  No expenses found. Start adding expenses to track your spending.
+                  No expenses found. Start adding expenses to track your
+                  spending.
                 </div>
               )}
             </div>
           </div>
 
+          {/* Delete Confirmation Modal */}
+          {showDeleteConfirm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  Confirm Delete
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to delete this income entry? This action
+                  cannot be undone.
+                </p>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setDeleteId(null);
+                    }}
+                    className="px-4 py-2 text-gray-500 hover:text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleDelete(deleteId)}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Add Budget Form Modal */}
           {showForm && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Budget</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                  Create New Budget
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Icon Picker */}
                   <div>
