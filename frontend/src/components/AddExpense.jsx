@@ -16,10 +16,8 @@ const AddExpense = ({ budgetId, onExpenseAdded }) => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/add-expense",
-        { name: expenseName, amount: expenseAmount, budgetId: budgetId, date: expenseDate}, { headers: { token: localStorage.getItem("token")}});
-        console.log(response.data);
+      const response = await axios.post("http://localhost:4000/api/dashboard/add-expense", { name: expenseName, amount: expenseAmount, budgetId: budgetId, date: expenseDate}, { headers: { token: localStorage.getItem("token")}});
+      console.log(response.data);
 
       if (response.data.success) {
         toast.success("Expense added successfully");

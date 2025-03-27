@@ -61,7 +61,6 @@ const Expense = () => {
     }
   }
 
-  // Fetch budget details
   const fetchBudgetDetails = async () => {
     try {
       const response = await axios.post('http://localhost:4000/api/dashboard/list-budget', {}, { headers: { token: localStorage.getItem("token")}});
@@ -74,10 +73,10 @@ const Expense = () => {
     }
   };
 
-  // Fetch expenses
   const fetchExpenses = async () => {
     try {
       const response = await axios.post('http://localhost:4000/api/dashboard/list-expense', { budgetId }, { headers: { token: localStorage.getItem("token") }});
+      
       if (response.data.success) {
         setExpenses(response.data.data);
       }
@@ -89,6 +88,7 @@ const Expense = () => {
   const handleDeleteExpense = async () => {
     try {
         const response = await axios.post('http://localhost:4000/api/dashboard/delete-expense', { expenseId: expenses._id }, { headers: { token: localStorage.getItem("token")}});
+        console.log(response.data);
         
         if (response.data.success) {
           toast.success("Expense deleted successfully");
