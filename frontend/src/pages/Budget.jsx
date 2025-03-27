@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Budget = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Budget = () => {
   const [budget, setBudget] = useState("");
   const [amount, setAmount] = useState("");
   const [budgets, setBudgets] = useState([]);
+  const [expenses, setExpenses] = useState([]);
 
   const icons = ["💰", "🛍️", "🏠", "🚗", "🌳", "📱", "✈️", "🎮", "📚", "🍽️"];
 
@@ -27,8 +29,23 @@ const Budget = () => {
     }
   }
 
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/api/dashboard/list-all-expense', {}, {headers: {token: localStorage.getItem("token")}});
+      console.log(response.data.data);
+
+      if (response.data.success) {
+        setExpenses(response.data.data);
+      }
+    } 
+    catch (error) {
+      console.log("Error in fetching expenses", error);
+    }
+  }
+
   useEffect(() => {
     fetchBudget();
+    fetchExpenses();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -50,6 +67,20 @@ const Budget = () => {
     } 
     catch (error) {
       console.log("Error in adding budget", error);
+    }
+  }
+
+  const handleDelete = async (expenseId) => {
+    try {
+      const response = await axios.post('http://localhost:4000/api/dashboard/delete-expense', {expenseId}, {headers: {token: localStorage.getItem("token")}});
+      console.log(response.data);
+
+      if (response.data.success) {
+        fetchExpenses();
+      }
+    } 
+    catch (error) {
+      console.log("Error in deleting expense", error);
     }
   }
 
@@ -142,6 +173,60 @@ const Budget = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* All Expenses Section */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            <h1 className="text-2xl font-bold text-gray-800">Recent Expenses</h1>
+            <p className="text-gray-600 mt-2 mb-6">Your latest expense entries</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {expenses.map((expense) => (
+                <div 
+                  key={expense._id}
+                  className="bg-white p-6 rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center">
+                        {expense.icon || "💰"}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800">{expense.name}</h3>
+                        <p className="text-gray-500">{new Date(expense.date).toLocaleDateString('en-US', { 
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl font-semibold text-red-500">- ${expense.amount}</span>
+                      <div className="flex gap-2"> 
+                        <button 
+                          className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(expense._id);
+                            toast.success("Expense deleted successfully");
+                            fetchExpenses();
+
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {expenses.length === 0 && (
+                <div className="col-span-2 text-center py-8 text-gray-500">
+                  No expenses found. Start adding expenses to track your spending.
+                </div>
+              )}
             </div>
           </div>
 

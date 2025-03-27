@@ -77,7 +77,7 @@ const Expense = () => {
   // Fetch expenses
   const fetchExpenses = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/list-expense', { budgetId }, { headers: { token: localStorage.getItem("token") }});
+      const response = await axios.post('http://localhost:4000/api/dashboard/list-expense', {budgetId}, { headers: { token: localStorage.getItem("token") }});
       if (response.data.success) {
         setExpenses(response.data.data);
       }
