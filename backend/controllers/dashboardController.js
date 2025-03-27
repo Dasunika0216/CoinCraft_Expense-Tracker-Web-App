@@ -144,8 +144,17 @@ const addExpense = async (req, res) => {
     }
 }
 
-const listExpense = async (res, req) => {
+const listExpense = async (req, res) => {
+    try {
+        const {userId, budgetId} = req.body;
 
+        const expenses = await expenseModel.find({userId, budgetId});
+        res.json({success: true, data: expenses});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 const deleteExpense = async (req, res) => {
