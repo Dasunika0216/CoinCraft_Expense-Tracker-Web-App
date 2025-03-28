@@ -101,12 +101,23 @@ const Expense = () => {
           {/* Header with Back Title and Action Buttons */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <button 
-                onClick={() => navigate('/budget')}
+              <button
+                onClick={() => navigate("/budget")}
                 className="text-gray-600 hover:text-gray-800 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
                 </svg>
               </button>
               <h1 className="text-2xl font-bold text-gray-800">My Expenses</h1>
@@ -116,8 +127,19 @@ const Expense = () => {
                 onClick={() => setShowEditForm(true)}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
                 </svg>
                 Edit
               </button>
@@ -125,8 +147,19 @@ const Expense = () => {
                 onClick={() => setShowDeleteConfirm(true)}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
                 </svg>
                 Delete
               </button>
@@ -143,23 +176,57 @@ const Expense = () => {
                       {budget.icon}
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-800">{budget.name}</h3>
-                      <p className="text-sm text-gray-500">{budget.expenses?.length || 0} Item{budget.expenses?.length !== 1 ? 's' : ''}</p>
+                      <h3 className="font-medium text-gray-800">
+                        {budget.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {expenses.length} Item{expenses.length !== 1 ? "s" : ""}
+                      </p>
                     </div>
                   </div>
-                  <span className="text-indigo-600 font-semibold">${budget.allocatedAmount}</span>
+                  <span className="text-indigo-600 font-semibold">
+                    ${budget.allocatedAmount}
+                  </span>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-gray-600">
-                    <span>${budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0} Spent</span>
-                    <span>${budget.allocatedAmount - (budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0)} Remaining</span>
+                    <span>
+                      $
+                      {new Intl.NumberFormat("en-US", {}).format(
+                        expenses.reduce(
+                          (total, expense) =>
+                            total + parseFloat(expense.amount || 0),
+                          0
+                        )
+                      )}{" "}
+                      Spent
+                    </span>
+                    <span>
+                      $
+                      {new Intl.NumberFormat("en-US", {}).format(
+                        budget.allocatedAmount -
+                          expenses.reduce(
+                            (total, expense) =>
+                              total + parseFloat(expense.amount || 0),
+                            0
+                          )
+                      )}{" "}
+                      Remaining
+                    </span>
                   </div>
                   <div className="h-2 bg-white rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${((budget.expenses?.reduce((total, expense) => total + expense.amount, 0) || 0) / budget.allocatedAmount) * 100}%` 
+                      style={{
+                        width: `${
+                          ((budget.expenses?.reduce(
+                            (total, expense) => total + expense.amount,
+                            0
+                          ) || 0) /
+                            budget.allocatedAmount) *
+                          100
+                        }%`,
                       }}
                     ></div>
                   </div>
@@ -168,7 +235,7 @@ const Expense = () => {
             )}
 
             {/* Add Expense Form */}
-            <AddExpense 
+            <AddExpense
               budgetId={budgetId}
               onExpenseAdded={() => {
                 fetchBudgetDetails();
@@ -179,21 +246,32 @@ const Expense = () => {
 
           {/* Latest Expenses Section */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">Latest Expenses</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">
+              Latest Expenses
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {expenses.map((expense) => (
-                <div key={expense._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div
+                  key={expense._id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                >
                   <div>
-                    <h3 className="font-medium text-gray-800">{expense.name}</h3>
+                    <h3 className="font-medium text-gray-800">
+                      {expense.name}
+                    </h3>
                     <p className="text-sm text-gray-500">
                       {new Date(expense.date).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className="text-indigo-600 font-semibold">${expense.amount}</span>
+                  <span className="text-indigo-600 font-semibold">
+                    ${expense.amount}
+                  </span>
                 </div>
               ))}
               {expenses.length === 0 && (
-                <p className="col-span-2 text-center py-8 text-gray-500">No expenses yet</p>
+                <p className="col-span-2 text-center py-8 text-gray-500">
+                  No expenses yet
+                </p>
               )}
             </div>
           </div>
@@ -203,7 +281,9 @@ const Expense = () => {
             <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Edit Budget</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Edit Budget
+                  </h2>
                   <button
                     onClick={() => {
                       setShowEditForm(false);
@@ -211,8 +291,18 @@ const Expense = () => {
                     }}
                     className="text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -313,8 +403,12 @@ const Expense = () => {
           {showDeleteConfirm && (
             <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-xl p-6 max-w-sm w-full mx-4">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Delete Budget</h3>
-                <p className="text-gray-600 mb-6">Are you sure you want to delete this budget?</p>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  Delete Budget
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to delete this budget?
+                </p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => {
