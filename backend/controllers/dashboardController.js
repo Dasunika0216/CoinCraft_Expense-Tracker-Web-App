@@ -141,7 +141,7 @@ const listExpense = async (req, res) => {
     try {
         const {userId, budgetId} = req.body;
 
-        const expenses = await expenseModel.find({userId, budgetId});
+        const expenses = await expenseModel.find({userId, budgetId}).sort({ date: -1 });
         res.json({success: true, data: expenses});
     } 
     catch (error) {
@@ -154,7 +154,7 @@ const listAllExpense = async (req, res) => {
     try {
         const {userId} = req.body;
 
-        const expenses = await expenseModel.find({userId});
+        const expenses = await expenseModel.find({userId}).sort({ date: -1 });
         res.json({success: true, data: expenses});
     } catch (error) {
         console.log(error);
