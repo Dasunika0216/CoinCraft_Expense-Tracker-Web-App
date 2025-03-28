@@ -3,8 +3,16 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Chart as ChartJS, CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend,} from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
 
 const Budget = () => {
   const navigate = useNavigate();
@@ -239,7 +247,7 @@ const Budget = () => {
 
              {/* Expense Chart */}
              <div className="bg-gray-50 p-6 rounded-xl">
-              <Bar options={chartOptions} data={chartData} />
+              <Line options={chartOptions} data={chartData} />
             </div>
           </div>
 
