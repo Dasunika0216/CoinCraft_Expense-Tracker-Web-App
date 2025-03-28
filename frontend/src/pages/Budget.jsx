@@ -89,23 +89,52 @@ const Budget = () => {
     }
   }
 
+  const chartData = {
+    labels: [...expenses]
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 20)
+      .map((expense) => new Date(expense.date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      })),
+    datasets: [
+      {
+        label: "Expense Amount ($)",
+        data: [...expenses]
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .slice(0, 20)
+          .map((expense) => expense.amount),
+        backgroundColor: "rgba(14, 59, 143, 0.8)",
+        borderColor: "rgba(14, 59, 143, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Amount ($)",
+        },
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Navbar />
       <main className="container mx-auto px-4 pt-20 pb-12">
         <div className="w-full max-w-5xl mx-auto space-y-8">
-          {/* Expense Overview Box */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-            <div className="flex flex-col mb-8">
-              <h1 className="text-3xl font-bold text-gray-800">
-                Expense Overview
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Track your spending trends over time and gain insights into
-                where your money goes.
-              </p>
-            </div>
-          </div>
 
           {/* Budgets Card */}
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
@@ -193,6 +222,24 @@ const Budget = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+           {/* Expense Overview Box */}
+           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            <div className="flex flex-col mb-8">
+              <h1 className="text-3xl font-bold text-gray-800">
+                Expense Overview
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Track your spending trends over time and gain insights into
+                where your money goes.
+              </p>
+            </div>
+
+             {/* Expense Chart */}
+             <div className="bg-gray-50 p-6 rounded-xl">
+              <Bar options={chartOptions} data={chartData} />
             </div>
           </div>
 
