@@ -1,8 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { useContext } from "react";
-import { ExpenseContext } from "../context/ExpenseContext";
 
 const AddExpense = ({ budgetId, onExpenseAdded }) => {
   // const { addExpense } = useContext(ExpenseContext);

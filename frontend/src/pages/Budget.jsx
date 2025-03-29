@@ -205,8 +205,7 @@ const Budget = () => {
                             {budget.name}
                           </h3>
                           <p className="text-sm text-gray-500">
-                            {budget.expenses?.length || 0} Item
-                            {budget.expenses?.length !== 1 ? "s" : ""}
+                          {expenses.length} Item{expenses.length !== 1 ? "s" : ""}
                           </p>
                         </div>
                       </div>
