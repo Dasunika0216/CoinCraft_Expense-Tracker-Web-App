@@ -193,25 +193,25 @@ const Expense = () => {
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>
                       $
-                      {new Intl.NumberFormat("en-US", {}).format(
+                      {expenses
+                        .reduce(
+                          (total, expense) =>
+                            total + parseFloat(expense.amount || 0),
+                          0
+                        )
+                        .toString()}{" "}
+                      Spent
+                    </span>
+                    <span>
+                      $
+                      {(
+                        budget.allocatedAmount -
                         expenses.reduce(
                           (total, expense) =>
                             total + parseFloat(expense.amount || 0),
                           0
                         )
-                      )}{" "}
-                      Spent
-                    </span>
-                    <span>
-                      $
-                      {new Intl.NumberFormat("en-US", {}).format(
-                        budget.allocatedAmount -
-                          expenses.reduce(
-                            (total, expense) =>
-                              total + parseFloat(expense.amount || 0),
-                            0
-                          )
-                      )}{" "}
+                      ).toString()}{" "}
                       Remaining
                     </span>
                   </div>
