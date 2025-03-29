@@ -3,16 +3,25 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Chart as ChartJS,
+import {
+  Chart as ChartJS,
   LineElement,
   PointElement,
   LinearScale,
   CategoryScale,
   Tooltip,
-  Legend,} from "chart.js";
+  Legend,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
 
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend
+);
 
 const Budget = () => {
   const navigate = useNavigate();
@@ -30,30 +39,37 @@ const Budget = () => {
 
   const fetchBudget = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/list-budget', {}, {headers: {token: localStorage.getItem("token")}});
-    
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/list-budget",
+        {},
+        { headers: { token: localStorage.getItem("token") } }
+      );
+
       if (response.data.success) {
         setBudgets(response.data.data);
+        // console.log(response.data.data);
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.log("Error in fetching budget", error);
     }
-  }
+  };
 
   const fetchExpenses = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/list-all-expense', {}, {headers: {token: localStorage.getItem("token")}});
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/list-all-expense",
+        {},
+        { headers: { token: localStorage.getItem("token") } }
+      );
       console.log(response.data.data);
 
       if (response.data.success) {
         setExpenses(response.data.data);
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.log("Error in fetching expenses", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchBudget();
@@ -64,7 +80,11 @@ const Budget = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/add-budget', {icon, name: budget, allocatedAmount:amount}, {headers: {token: localStorage.getItem("token")}});
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/add-budget",
+        { icon, name: budget, allocatedAmount: amount },
+        { headers: { token: localStorage.getItem("token") } }
+      );
       console.log(response.data);
 
       if (response.data.success) {
@@ -75,37 +95,40 @@ const Budget = () => {
         setAmount("");
         fetchBudget();
       }
-
-    } 
-    catch (error) {
+    } catch (error) {
       console.log("Error in adding budget", error);
     }
-  }
+  };
 
   const handleDelete = async (expenseId) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/delete-expense', {expenseId}, {headers: {token: localStorage.getItem("token")}});
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/delete-expense",
+        { expenseId },
+        { headers: { token: localStorage.getItem("token") } }
+      );
       console.log(response.data);
 
       if (response.data.success) {
         setShowDeleteConfirm(false);
         fetchExpenses();
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.log("Error in deleting expense", error);
     }
-  }
+  };
 
   const chartData = {
     labels: [...expenses]
       .sort((a, b) => new Date(a.date) - new Date(b.date))
       .slice(0, 20)
-      .map((expense) => new Date(expense.date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      })),
+      .map((expense) =>
+        new Date(expense.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      ),
     datasets: [
       {
         label: "Expense Amount ($)",
@@ -143,7 +166,6 @@ const Budget = () => {
       <Navbar />
       <main className="container mx-auto px-4 pt-20 pb-12">
         <div className="w-full max-w-5xl mx-auto space-y-8">
-
           {/* Budgets Card */}
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">
@@ -184,7 +206,6 @@ const Budget = () => {
                     (total, expense) => total + expense.amount,
                     0
                   ) || 0;
-                const remainingAmount = budget.allocatedAmount - spentAmount;
                 const progress = (spentAmount / budget.allocatedAmount) * 100;
 
                 return (
@@ -205,7 +226,17 @@ const Budget = () => {
                             {budget.name}
                           </h3>
                           <p className="text-sm text-gray-500">
-                          {expenses.length} Item{expenses.length !== 1 ? "s" : ""}
+                            {
+                              expenses.filter(
+                                (expense) => expense.budgetId === budget._id
+                              ).length
+                            }{" "}
+                            Item
+                            {expenses.filter(
+                              (expense) => expense.budgetId === budget._id
+                            ).length !== 1
+                              ? "s"
+                              : ""}
                           </p>
                         </div>
                       </div>
@@ -215,9 +246,36 @@ const Budget = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>${spentAmount} Spent</span>
-                        <span>${remainingAmount} Remaining</span>
+                      <div className="flex justify-between text-xs text-gray-600">
+                        <span>
+                          $
+                          {expenses
+                            .filter(
+                              (expense) => expense.budgetId === budget._id
+                            )
+                            .reduce(
+                              (total, expense) =>
+                                total + parseFloat(expense.amount || 0),
+                              0
+                            )}{" "}
+                          Spent
+                        </span>
+                        <span>
+                          $
+                          {Math.round(
+                            budget.allocatedAmount -
+                              expenses
+                                .filter(
+                                  (expense) => expense.budgetId === budget._id
+                                )
+                                .reduce(
+                                  (total, expense) =>
+                                    total + parseFloat(expense.amount || 0),
+                                  0
+                                )
+                          )}{" "}
+                          Remaining
+                        </span>
                       </div>
                       <div className="h-2 bg-white rounded-full overflow-hidden">
                         <div
@@ -232,8 +290,8 @@ const Budget = () => {
             </div>
           </div>
 
-           {/* Expense Overview Box */}
-           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          {/* Expense Overview Box */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
             <div className="flex flex-col mb-8">
               <h1 className="text-3xl font-bold text-gray-800">
                 Expense Overview
@@ -244,8 +302,8 @@ const Budget = () => {
               </p>
             </div>
 
-             {/* Expense Chart */}
-             <div className="bg-gray-50 p-6 rounded-xl">
+            {/* Expense Chart */}
+            <div className="bg-gray-50 p-6 rounded-xl">
               <Line options={chartOptions} data={chartData} />
             </div>
           </div>
