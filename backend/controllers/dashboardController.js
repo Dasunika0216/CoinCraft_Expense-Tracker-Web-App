@@ -30,7 +30,7 @@ const listIncome = async (req, res) => {
     try {
         const {userId} = req.body;
 
-        const incomes = await incomeModel.find({userId}).sort({ date: 1 });
+        const incomes = await incomeModel.find({userId}).sort({ date: -1 });
         res.json({success: true, data: incomes});
     } 
     catch (error) {
