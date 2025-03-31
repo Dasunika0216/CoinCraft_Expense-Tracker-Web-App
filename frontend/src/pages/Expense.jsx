@@ -204,32 +204,56 @@ const Expense = () => {
                     </span>
                     <span>
                       $
-                      {(
+                      {Math.max(
+                        0,
                         budget.allocatedAmount -
-                        expenses.reduce(
-                          (total, expense) =>
-                            total + parseFloat(expense.amount || 0),
-                          0
-                        )
+                          expenses.reduce(
+                            (total, expense) =>
+                              total + parseFloat(expense.amount || 0),
+                            0
+                          )
                       ).toString()}{" "}
                       Remaining
                     </span>
                   </div>
                   <div className="h-2 bg-white rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${
-                          ((budget.expenses?.reduce(
-                            (total, expense) => total + expense.amount,
-                            0
-                          ) || 0) /
-                            budget.allocatedAmount) *
-                          100
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
+  <div
+    className={`h-full rounded-full transition-all duration-500 ${
+      Math.max(
+        0,
+        budget.allocatedAmount -
+          expenses.reduce(
+            (total, expense) => total + parseFloat(expense.amount || 0),
+            0
+          )
+      ) === 0
+        ? "bg-red-600"
+        : "bg-indigo-600"
+    }`}
+    style={{
+      width: `${
+        (expenses.reduce(
+          (total, expense) => total + parseFloat(expense.amount || 0),
+          0
+        ) /
+          budget.allocatedAmount) *
+        100
+      }%`,
+    }}
+  ></div>
+</div>
+{Math.max(
+  0,
+  budget.allocatedAmount -
+    expenses.reduce(
+      (total, expense) => total + parseFloat(expense.amount || 0),
+      0
+    )
+) === 0 && (
+  <p className="text-sm text-red-600 font-semibold mt-2">
+    Warning! Be mindful about your budget
+  </p>
+)}
                 </div>
               </div>
             )}
