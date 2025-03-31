@@ -9,78 +9,115 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const Dashboard = () => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
-  const [recentIncomes, setRecentIncomes] = useState([]); 
+  const [recentIncomes, setRecentIncomes] = useState([]);
+  const [recentExpenses, setRecentExpenses] = useState([]);
 
   const fetchTotalIncome = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/total-income', {}, { headers: { token: localStorage.getItem("token") }});
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/total-income",
+        {},
+        { headers: { token: localStorage.getItem("token") } }
+      );
       // console.log(response.data);
 
       if (response.data.success) {
         setTotalIncome(response.data.data[0].totalIncome);
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching total income:", error);
     }
   };
 
   const fetchTotalExpenses = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/total-expense', {}, { headers: { token: localStorage.getItem("token") }});
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/total-expense",
+        {},
+        { headers: { token: localStorage.getItem("token") } }
+      );
       // console.log(response.data);
 
       if (response.data.success) {
         setTotalExpense(response.data.data[0].totalExpense);
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching total income:", error);
     }
   };
 
   const fetchRecentIncomes = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/dashboard/list-income', {}, { headers: { token: localStorage.getItem('token')}});
+      const response = await axios.post(
+        "http://localhost:4000/api/dashboard/list-income",
+        {},
+        { headers: { token: localStorage.getItem("token") } }
+      );
+      // console.log(response.data);
+
+      if (response.data.success) {
+        setRecentIncomes(response.data.data.slice(0, 5));
+      }
+    } catch (error) {
+      console.error("Error fetching recent incomes:", error);
+    }
+  };
+
+  const fetchRecentExpenses = async () => {
+    try {
+      const response = await axios.post("http://localhost:4000/api/dashboard/list-all-expense",{},{ headers: { token: localStorage.getItem("token")}});
       console.log(response.data);
 
       if (response.data.success) {
-        setRecentIncomes(response.data.data.slice(0, 5)); 
+        setRecentExpenses(response.data.data.slice(0, 5));
       }
     } catch (error) {
-      console.error('Error fetching recent incomes:', error);
+      console.error("Error fetching recent incomes:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchTotalIncome();
     fetchTotalExpenses();
     fetchRecentIncomes();
-  },[]);
+    fetchRecentExpenses();
+  }, []);
 
   const totalBalance = Math.max(0, totalIncome - totalExpense);
 
-   // Data for the Doughnut Chart
-   const chartData = {
-    labels: ['Total Balance', 'Total Expenses', 'Total Income'],
+  // Data for the Doughnut Chart
+  const chartData = {
+    labels: ["Total Balance", "Total Expenses", "Total Income"],
     datasets: [
       {
         data: [totalBalance, totalExpense, totalIncome],
-        backgroundColor: ['#7e3af2', '#f05252', '#f97316'], // Colors for each section
-        hoverBackgroundColor: ['#6b21a8', '#dc2626', '#ea580c'], // Hover colors
+        backgroundColor: ["#7e3af2", "#f05252", "#f97316"], // Colors for each section
+        hoverBackgroundColor: ["#6b21a8", "#dc2626", "#ea580c"], // Hover colors
         borderWidth: 1,
       },
     ],
   };
 
-   // Data for the Doughnut Chart
-   const incomeChartData = {
+  // Data for the Doughnut Chart
+  const incomeChartData = {
     labels: recentIncomes.map((income) => income.source), // Use income sources as labels
     datasets: [
       {
         data: recentIncomes.map((income) => income.amount), // Use income amounts as data
-        backgroundColor: ['#7e3af2', '#f05252', '#f97316', '#10b981', '#3b82f6'], // Colors for each section
-        hoverBackgroundColor: ['#6b21a8', '#dc2626', '#ea580c', '#059669', '#2563eb'], // Hover colors
+        backgroundColor: [
+          "#7e3af2",
+          "#f05252",
+          "#f97316",
+          "#10b981",
+          "#3b82f6",
+        ], // Colors for each section
+        hoverBackgroundColor: [
+          "#6b21a8",
+          "#dc2626",
+          "#ea580c",
+          "#059669",
+          "#2563eb",
+        ], // Hover colors
         borderWidth: 1,
       },
     ],
@@ -89,9 +126,48 @@ const Dashboard = () => {
   const incomeChartOptions = {
     plugins: {
       legend: {
-        position: 'bottom',
+        position: "bottom",
         labels: {
-          color: '#4b5563', // Text color
+          color: "#4b5563", // Text color
+          font: {
+            size: 14,
+          },
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
+
+  const expenseChartData = {
+    labels: recentExpenses.map((expense) => expense.name), // Use expense sources as labels
+    datasets: [
+      {
+        data: recentExpenses.map((expense) => expense.amount), // Use expense amounts as data
+        backgroundColor: [
+          "#f05252",
+          "#f97316",
+          "#10b981",
+          "#3b82f6",
+          "#7e3af2",
+        ], // Colors for each section
+        hoverBackgroundColor: [
+          "#dc2626",
+          "#ea580c",
+          "#059669",
+          "#2563eb",
+          "#6b21a8",
+        ], // Hover colors
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const expenseChartOptions = {
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#4b5563", // Text color
           font: {
             size: 14,
           },
@@ -104,9 +180,9 @@ const Dashboard = () => {
   const chartOptions = {
     plugins: {
       legend: {
-        position: 'bottom',
+        position: "bottom",
         labels: {
-          color: '#4b5563', // Text color
+          color: "#4b5563", // Text color
           font: {
             size: 14,
           },
@@ -235,10 +311,76 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-5 mt-5">
+            {/* Recent Expenses Section */}
+            <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-gray-200 flex flex-col h-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-800">
+                  Recent Expense Sources
+                </h2>
+                <button
+                  className="px-3 py-1 bg-red-100 text-red-600 font-medium rounded-lg hover:bg-red-200 hover:text-red-700 transition-all duration-300 shadow-md"
+                  onClick={() => (window.location.href = "/budget")}
+                >
+                  See All
+                </button>
+              </div>
+              <div className="space-y-3">
+                {recentExpenses.map((expense) => (
+                  <div
+                    key={expense._id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg shadow-sm"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-600 text-lg">
+                        {expense.icon || "💸"}
+                      </div>
+                      <div>
+                        <h3 className="text-md font-semibold text-gray-800">
+                          {expense.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {new Date(expense.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      - ${expense.amount}
+                    </span>
+                  </div>
+                ))}
+                {recentExpenses.length === 0 && (
+                  <p className="text-center text-gray-500">
+                    No recent expenses found.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Recent Expense Sources Chart */}
+            <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-gray-200 flex flex-col h-auto">
+              <h2 className="text-xl font-bold text-gray-800 text-center mb-4 mt-12">
+                Recently Added Expense Sources
+              </h2>
+              <div className="flex justify-center">
+                <div className="w-64 h-64">
+                  <Doughnut
+                    data={expenseChartData}
+                    options={expenseChartOptions}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Dashboard
+export default Dashboard;
