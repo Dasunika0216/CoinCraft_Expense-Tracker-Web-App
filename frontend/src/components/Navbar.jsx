@@ -7,13 +7,15 @@ const Navbar = () => {
   const location = useLocation();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');                   // remove token when logout
+    localStorage.removeItem('token');                
     navigate('/login');
   };
 
   const isActive = (path) => {
     return location.pathname === path;
   };
+
+  const isLoggedIn = !!localStorage.getItem('token'); 
 
   return (
     <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
@@ -40,9 +42,22 @@ const Navbar = () => {
                 isActive('/budget') ? 'w-full' : 'w-0 group-hover:w-full'
               }`}></span>
             </Link>
-
-              
-            <button onClick={handleLogout} className="bg-[#0b0259] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#031b3a] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0" > Logout </button>
+  
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="bg-[#0b0259] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#031b3a] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-[#0b0259] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#031b3a] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>
