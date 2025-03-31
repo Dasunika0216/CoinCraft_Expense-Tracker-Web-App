@@ -1,6 +1,6 @@
 import express from 'express';
 import authUser from '../middleware/auth.js';
-import {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listBudget, listExpense, updateBudget} from '../controllers/dashboardController.js';
+import {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listBudget, listExpense, updateBudget, listAllExpense} from '../controllers/dashboardController.js';
 
 const dashboardRouter = express.Router();
 
@@ -13,6 +13,7 @@ dashboardRouter.post('/update-budget', authUser, updateBudget);
 dashboardRouter.post('/delete-budget', authUser, deleteBudget);
 dashboardRouter.post('/add-expense', authUser, addExpense);
 dashboardRouter.post('/list-expense', authUser, listExpense);
+dashboardRouter.post('/list-all-expense', authUser, listAllExpense);
 dashboardRouter.post('/delete-expense', authUser, deleteExpense);   
 
 export default dashboardRouter;

@@ -105,6 +105,7 @@ const deleteBudget = async (req, res) => {
 
     try {
         await budgetModel.findByIdAndDelete(budgetId);
+        await expenseModel.deleteMany({budgetId});
         res.json({success: true, messege: "Budget deleted successfully"});
     } 
     catch (error) {
@@ -136,12 +137,42 @@ const addExpense = async (req, res) => {
     }
 }
 
-const listExpense = async (res, req) => {
+const listExpense = async (req, res) => {
+    try {
+        const {userId, budgetId} = req.body;
 
+        const expenses = await expenseModel.find({userId, budgetId}).sort({ date: -1 });
+        res.json({success: true, data: expenses});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+}
+
+const listAllExpense = async (req, res) => {
+    try {
+        const {userId} = req.body;
+
+        const expenses = await expenseModel.find({userId}).sort({ date: -1 });
+        res.json({success: true, data: expenses});
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 const deleteExpense = async (req, res) => {
+    const {expenseId} = req.body;
 
+    try {
+        await expenseModel.findByIdAndDelete(expenseId);
+        res.json({success: true, message: "Expense deleted successfully"});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
-export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget, updateBudget};
+export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget, updateBudget, listAllExpense};

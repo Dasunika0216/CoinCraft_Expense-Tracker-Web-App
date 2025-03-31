@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 const AddExpense = ({ budgetId, onExpenseAdded }) => {
+  // const { addExpense } = useContext(ExpenseContext);
   const [expenseName, setExpenseName] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
   const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split('T')[0]);
@@ -16,12 +17,12 @@ const AddExpense = ({ budgetId, onExpenseAdded }) => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/add-expense",
-        { name: expenseName, amount: expenseAmount, budgetId: budgetId, date: expenseDate}, { headers: { token: localStorage.getItem("token")}});
-        console.log(response.data);
+      const response = await axios.post("http://localhost:4000/api/dashboard/add-expense", { name: expenseName, amount: expenseAmount, budgetId: budgetId, date: expenseDate}, { headers: { token: localStorage.getItem("token")}});
+      console.log(response.data);
 
       if (response.data.success) {
+        // addExpense(expenseAmount); 
+        // setItemCount(response.data.itemCount);
         toast.success("Expense added successfully");
 
         setExpenseName("");
