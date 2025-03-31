@@ -211,7 +211,23 @@ const Budget = () => {
                 return (
                   <div
                     key={budget._id}
-                    className="bg-gray-50 p-6 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100 transition-all duration-200"
+                    className={`bg-gray-50 p-6 rounded-xl border cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                      Math.max(
+                        0,
+                        budget.allocatedAmount -
+                          expenses
+                            .filter(
+                              (expense) => expense.budgetId === budget._id
+                            )
+                            .reduce(
+                              (total, expense) =>
+                                total + parseFloat(expense.amount || 0),
+                              0
+                            )
+                      ) === 0
+                        ? "border-red-600 bg-red-50 hover:bg-red-100"
+                        : "border-gray-200"
+                    }`}
                     onClick={() =>
                       navigate("/expense", { state: { budgetId: budget._id } })
                     }
@@ -330,7 +346,7 @@ const Budget = () => {
                             )
                       ) === 0 && (
                         <p className="text-sm text-red-600 font-semibold mt-2">
-                          Warning! Be mindful about your budget
+                          Warning! Be mindful about your allocated budget
                         </p>
                       )}
                     </div>

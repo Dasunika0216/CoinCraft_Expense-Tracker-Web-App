@@ -169,93 +169,102 @@ const Expense = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Budget Card */}
             {budget && (
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl">
-                      {budget.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-800">
-                        {budget.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {expenses.length} Item{expenses.length !== 1 ? "s" : ""}
-                      </p>
-                    </div>
+              <div
+              className={`bg-gray-50 p-6 rounded-xl border cursor-pointer transition-all duration-200 ${
+                Math.max(
+                  0,
+                  budget.allocatedAmount -
+                    expenses.reduce(
+                      (total, expense) => total + parseFloat(expense.amount || 0),
+                      0
+                    )
+                ) === 0
+                  ? "border-red-600 bg-red-50 hover:bg-red-100"
+                  : "border-gray-200"
+              }`}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl">
+                    {budget.icon}
                   </div>
-                  <span className="text-indigo-600 font-semibold">
-                    ${budget.allocatedAmount}
-                  </span>
+                  <div>
+                    <h3 className="font-medium text-gray-800">{budget.name}</h3>
+                    <p className="text-sm text-gray-500">
+                      {expenses.length} Item{expenses.length !== 1 ? "s" : ""}
+                    </p>
+                  </div>
                 </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>
-                      $
-                      {expenses
-                        .reduce(
-                          (total, expense) =>
-                            total + parseFloat(expense.amount || 0),
+                <span className="text-indigo-600 font-semibold">
+                  ${budget.allocatedAmount}
+                </span>
+              </div>
+            
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>
+                    $
+                    {expenses
+                      .reduce(
+                        (total, expense) => total + parseFloat(expense.amount || 0),
+                        0
+                      )
+                      .toString()}{" "}
+                    Spent
+                  </span>
+                  <span>
+                    $
+                    {Math.max(
+                      0,
+                      budget.allocatedAmount -
+                        expenses.reduce(
+                          (total, expense) => total + parseFloat(expense.amount || 0),
                           0
                         )
-                        .toString()}{" "}
-                      Spent
-                    </span>
-                    <span>
-                      $
-                      {Math.max(
+                    ).toString()}{" "}
+                    Remaining
+                  </span>
+                </div>
+                <div className="h-2 bg-white rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      Math.max(
                         0,
                         budget.allocatedAmount -
                           expenses.reduce(
-                            (total, expense) =>
-                              total + parseFloat(expense.amount || 0),
+                            (total, expense) => total + parseFloat(expense.amount || 0),
                             0
                           )
-                      ).toString()}{" "}
-                      Remaining
-                    </span>
-                  </div>
-                  <div className="h-2 bg-white rounded-full overflow-hidden">
-  <div
-    className={`h-full rounded-full transition-all duration-500 ${
-      Math.max(
-        0,
-        budget.allocatedAmount -
-          expenses.reduce(
-            (total, expense) => total + parseFloat(expense.amount || 0),
-            0
-          )
-      ) === 0
-        ? "bg-red-600"
-        : "bg-indigo-600"
-    }`}
-    style={{
-      width: `${
-        (expenses.reduce(
-          (total, expense) => total + parseFloat(expense.amount || 0),
-          0
-        ) /
-          budget.allocatedAmount) *
-        100
-      }%`,
-    }}
-  ></div>
-</div>
-{Math.max(
-  0,
-  budget.allocatedAmount -
-    expenses.reduce(
-      (total, expense) => total + parseFloat(expense.amount || 0),
-      0
-    )
-) === 0 && (
-  <p className="text-sm text-red-600 font-semibold mt-2">
-    Warning! Be mindful about your budget
-  </p>
-)}
+                      ) === 0
+                        ? "bg-red-600"
+                        : "bg-indigo-600"
+                    }`}
+                    style={{
+                      width: `${
+                        (expenses.reduce(
+                          (total, expense) => total + parseFloat(expense.amount || 0),
+                          0
+                        ) /
+                          budget.allocatedAmount) *
+                        100
+                      }%`,
+                    }}
+                  ></div>
                 </div>
+                {Math.max(
+                  0,
+                  budget.allocatedAmount -
+                    expenses.reduce(
+                      (total, expense) => total + parseFloat(expense.amount || 0),
+                      0
+                    )
+                ) === 0 && (
+                  <p className="text-sm text-red-600 font-semibold mt-2">
+                    Warning! Be mindful about your allocated budget
+                  </p>
+                )}
               </div>
+            </div>
             )}
 
             {/* Add Expense Form */}
