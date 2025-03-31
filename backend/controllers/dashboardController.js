@@ -175,4 +175,32 @@ const deleteExpense = async (req, res) => {
     }
 }
 
-export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget, updateBudget, listAllExpense};
+const totalIncome = async (req, res) => {
+    const {userId} = req.body;
+
+    try {
+        const totalIncome = await incomeModel.aggregate([ {$match: {userId}}, { $group: { _id: null, totalIncome: {$sum: "$amount"}}}]);
+
+        res.json({success: true, data: totalIncome});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+}
+
+const totalExpense = async (req, res) => {
+    const {userId} = req.body;
+
+    try {
+        const totalIncome = await expenseModel.aggregate([ {$match: {userId}}, { $group: { _id: null, totalExpense: {$sum: "$amount"}}}]);
+
+        res.json({success: true, data: totalIncome});
+    } 
+    catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+}
+
+export {addIncome, listIncome, deleteIncome, addBudget, deleteBudget, addExpense, deleteExpense, listExpense, listBudget, updateBudget, listAllExpense, totalIncome, totalExpense};
