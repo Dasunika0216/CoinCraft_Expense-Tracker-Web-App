@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { Chart as ChartJS, CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend,} from "chart.js";
 import { Bar } from "react-chartjs-2";
 
@@ -53,6 +54,7 @@ const Income = () => {
           setAmount("");
           setDate("");
           fetchIncome();
+          toast.success("Income added successfully!");
         } catch (error) {
           console.log("Error in adding the income", error);
         }
@@ -70,6 +72,7 @@ const Income = () => {
         setShowDeleteConfirm(false);
         setDeleteId(null);
         fetchIncome();
+        toast.success("Income deleted successfully!");
       }
     } catch (error) {
       console.log("Error in deleting the income", error);

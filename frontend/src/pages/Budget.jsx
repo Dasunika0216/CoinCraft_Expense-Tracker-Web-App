@@ -39,11 +39,7 @@ const Budget = () => {
 
   const fetchBudget = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/list-budget",
-        {},
-        { headers: { token: localStorage.getItem("token") } }
-      );
+      const response = await axios.post("http://localhost:4000/api/dashboard/list-budget",{},{ headers: { token: localStorage.getItem("token") } });
 
       if (response.data.success) {
         setBudgets(response.data.data);
@@ -80,11 +76,7 @@ const Budget = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/add-budget",
-        { icon, name: budget, allocatedAmount: amount },
-        { headers: { token: localStorage.getItem("token") } }
-      );
+      const response = await axios.post("http://localhost:4000/api/dashboard/add-budget",{ icon, name: budget, allocatedAmount: amount },{ headers: { token: localStorage.getItem("token")}});
       console.log(response.data);
 
       if (response.data.success) {
@@ -94,6 +86,7 @@ const Budget = () => {
         setBudget("");
         setAmount("");
         fetchBudget();
+        toast.success("Budget added successfully!");
       }
     } catch (error) {
       console.log("Error in adding budget", error);
@@ -102,16 +95,13 @@ const Budget = () => {
 
   const handleDelete = async (expenseId) => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/dashboard/delete-expense",
-        { expenseId },
-        { headers: { token: localStorage.getItem("token") } }
-      );
+      const response = await axios.post("http://localhost:4000/api/dashboard/delete-expense", { expenseId },{ headers: { token: localStorage.getItem("token")}});
       console.log(response.data);
 
       if (response.data.success) {
         setShowDeleteConfirm(false);
         fetchExpenses();
+        toast.success("Expense deleted successfully!");
       }
     } catch (error) {
       console.log("Error in deleting expense", error);
