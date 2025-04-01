@@ -29,13 +29,13 @@ const About = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#f5f7ff] to-white">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-[#4339F2]/5 py-24">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-[#4339F2] rounded-full filter blur-[8rem] opacity-20" />
-        <div className="absolute bottom-0 left-20 w-96 h-96 bg-[#4339F2] rounded-full filter blur-[10rem] opacity-10" />
+        <div className="absolute top-20 right-20 w-72 h-72 bg-[#5c6ef7] rounded-full filter blur-[8rem] opacity-20" />
+        <div className="absolute bottom-0 left-20 w-96 h-96 bg-[#5c6ef7] rounded-full filter blur-[10rem] opacity-10" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-              About <span className="text-[#4339F2]">CoinCraft</span>
+              About <span className="text-[#5c6ef7]">CoinCraft</span>
             </h1>
             <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-600">
               We're on a mission to make personal finance management simple and effective for everyone.
@@ -86,7 +86,7 @@ const About = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-16 bg-gradient-to-br from-[#4339F2]/5 to-white">
+      <section className="py-16 bg-gradient-to-br from-[#5c6ef7]/5 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
