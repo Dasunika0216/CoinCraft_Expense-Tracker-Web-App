@@ -4,10 +4,10 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Login');
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,6 +61,16 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0b0259]/5 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="absolute top-5 left-5">
+        {/* Back Icon */}
+        <button
+          onClick={() => navigate("/")} // Navigate to the home page
+          className="flex items-center text-[#0b0259] hover:text-[#0b0259]/80 transition-colors duration-200"
+        >
+          <FaArrowLeft className="mr-2" /> {/* Back arrow icon */}
+          <span className="text-sm font-medium">Back to Home</span>
+        </button>
+      </div>
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
         <div className="text-center">
           <div className="flex justify-center mb-6">
@@ -70,43 +80,90 @@ const Login = () => {
             {currentState}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            {currentState === "Login" 
+            {currentState === "Login"
               ? "Welcome back! Please sign in to your account"
               : "Create a new account to get started"}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
           <div className="rounded-md space-y-4">
-            {currentState === "Login" ? '': (
+            {currentState === "Login" ? (
+              ""
+            ) : (
               <div>
-                <input id="username" onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder="Username" required
-                className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"  />
+                <input
+                  id="username"
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                  type="text"
+                  placeholder="Username"
+                  required
+                  className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"
+                />
               </div>
             )}
             <div>
-              <input id="email" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="Email address" required className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"  />
+              <input
+                id="email"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                type="email"
+                placeholder="Email address"
+                required
+                className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"
+              />
             </div>
             <div>
-              <input id="password" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" required className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"  />
+              <input
+                id="password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                type="password"
+                placeholder="Password"
+                required
+                className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"
+              />
             </div>
-            {currentState === "Login" ? '' :(
+            {currentState === "Login" ? (
+              ""
+            ) : (
               <div>
-                <input id="confirm-password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} type="password" placeholder="Confirm Password" required className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"  />
+                <input
+                  id="confirm-password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={confirmPassword}
+                  type="password"
+                  placeholder="Confirm Password"
+                  required
+                  className="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0b0259] focus:border-[#0b0259] focus:z-10 sm:text-sm transition-all duration-200"
+                />
               </div>
             )}
           </div>
 
           <div>
-            <button type="submit" className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#0b0259] hover:bg-[#0b0259]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b0259] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-            >{currentState}</button>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#0b0259] hover:bg-[#0b0259]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b0259] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+            >
+              {currentState}
+            </button>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              {currentState === "Login" 
+              {currentState === "Login"
                 ? "Don't have an account? "
                 : "Already have an account? "}
-              <button type="button" onClick={() => setCurrentState(currentState === "Login" ? "Sign Up" : "Login")} className="font-medium text-[#0b0259] hover:text-[#0b0259]/80 transition-colors duration-200 hover:underline" >
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentState(
+                    currentState === "Login" ? "Sign Up" : "Login"
+                  )
+                }
+                className="font-medium text-[#0b0259] hover:text-[#0b0259]/80 transition-colors duration-200 hover:underline"
+              >
                 {currentState === "Login" ? "Sign Up here" : "Login here"}
               </button>
             </p>
@@ -114,7 +171,7 @@ const Login = () => {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default Login
