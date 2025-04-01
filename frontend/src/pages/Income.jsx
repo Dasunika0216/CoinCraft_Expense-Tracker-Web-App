@@ -23,11 +23,11 @@ const Income = () => {
   const fetchIncome = async () => {
     try {
       const response = await axios.post("http://localhost:4000/api/dashboard/list-income", {}, { headers: { token: localStorage.getItem("token")}});
-      console.log(response.data.data);
+      console.log(response.data.message);
 
       if (response.data.success) {
         setIncomes(response.data.data);
-      }
+      } 
     } catch (error) {
       console.log("Error in fetching the income", error);
     }
@@ -58,6 +58,9 @@ const Income = () => {
         } catch (error) {
           console.log("Error in adding the income", error);
         }
+      }
+      else {
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.log("Error in adding the income", error);

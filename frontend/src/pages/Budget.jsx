@@ -88,7 +88,11 @@ const Budget = () => {
         fetchBudget();
         toast.success("Budget added successfully!");
       }
+      else{
+        toast.error(response.data.message)
+      }
     } catch (error) {
+      toast.error("error")
       console.log("Error in adding budget", error);
     }
   };
