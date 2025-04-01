@@ -197,6 +197,7 @@ const Dashboard = () => {
       <Navbar />
       <div className="flex justify-center pt-20 min-h-screen">
         <div className="w-full max-w-6xl">
+
           {/* Warning Message */}
           {totalIncome < totalExpense && (
             <div className="text-center mb-6">

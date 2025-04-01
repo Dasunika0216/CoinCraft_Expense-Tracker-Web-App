@@ -156,6 +156,15 @@ const Budget = () => {
       <Navbar />
       <main className="container mx-auto px-4 pt-20 pb-12">
         <div className="w-full max-w-5xl mx-auto space-y-8">
+          {/* Introductory Sentence */}
+          <div className="text-center my-6 px-4 border border-gray-300 rounded-lg p-4 shadow-sm bg-[#e1e7fa]">
+            <p className="text-xl text-gray-700 font-semibold leading-relaxed">
+              Take control of your finances effortlessly - set your budget for a
+              week or a month, tweak it as needed, or remove it anytime to stay
+              on top of your spending!
+            </p>
+          </div>
+
           {/* Budgets Card */}
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">
